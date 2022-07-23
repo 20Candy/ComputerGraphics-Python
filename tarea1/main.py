@@ -1,16 +1,14 @@
-from gl import Gl
+from gl import Renderer
 
-def point():
+r = Renderer()
+r.glInit()
+r.glColor(1, 1, 1)
+r.glClearColor(0, 0, 0)
+r.glCreateWindow(300, 300)
+r.glViewPort(100, 100, 100, 100)
 
-    render = Gl()
-
-    render.glInit()
-    render.glCreateWindow(100,100)
-    render.glViewPort(5,5,90,90)   #90x90 => x = 90+5+5 = 100, y = 90+5+5 = 100
-
-    render.glColor(0.8,0.1,0.9)  
-
-    render.glVertex(1,1)
-    render.glFinish()
-
-point()
+r.glLine(-1, -1, 0.5, 0.5)
+r.glLine( -1, 1, 0.5, 0.5)
+r.glLine( -0.5, 0.5, 1, -1)
+r.glLine(-1, 0, 1, 0)
+r.glFinish()
