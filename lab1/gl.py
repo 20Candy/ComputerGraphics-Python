@@ -153,30 +153,30 @@ class Renderer(object):
 
 
     def glFill(self, poligon):
-        # fill = []
-        # poligonY = []
-        # poligonX = []
-        # with open(poligon) as f:
-        #     lines = f.read().splitlines()
-        #     for i in range(len(lines)):
-        #         x1, y1 = lines[i % len(lines)].split(', ')
-        #         self.polygonV.append([int(x1), int(y1)])
-        #         poligonY.append(int(y1))
-        #         poligonX.append(int(x1))
-        # xmin, ymin, xmax, ymax = min(poligonX), min(poligonY), max(poligonX), max(poligonY)
+        fill = []
+        poligonY = []
+        poligonX = []
+        with open(poligon) as f:
+            lines = f.read().splitlines()
+            for i in range(len(lines)):
+                x1, y1 = lines[i % len(lines)].split(', ')
+                self.polygonV.append([int(x1), int(y1)])
+                poligonY.append(int(y1))
+                poligonX.append(int(x1))
+        xmin, ymin, xmax, ymax = min(poligonX), min(poligonY), max(poligonX), max(poligonY)
         
-        # for y in range(ymin, ymax + 1):
-        #     for x in range(xmin, xmax + 1):
-        #         print (self.pixels[y][x],self.color )
+        for y in range(ymin, ymax + 1):
+            for x in range(xmin, xmax + 1):
+                print (self.pixels[y][x],self.color )
 
-        #         if self.pixels[y][x] == self.color:
-        #             fill.append(x)
-        #     try:
-        #         for num in range(fill[0], fill[-1]):
-        #             self.pixels[y][num] = self.color
-        #         fill = []
-        #     except:
-        #         pass
+                if self.pixels[y][x] == self.color:
+                    fill.append(x)
+            try:
+                for num in range(fill[0], fill[-1]):
+                    self.pixels[y][num] = self.color
+                fill = []
+            except:
+                pass
         fill = []
 
     
