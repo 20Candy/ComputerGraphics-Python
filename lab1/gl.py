@@ -51,11 +51,11 @@ class Renderer(object):
         self.ImageHeight = int(height)
 
     def glVertex(self, x, y):
-        if not (-1 <= x <= 1) or not (-1 <= y <= 1):
-            raise Exception('unexpected vertex offset')
+        # if not (-1 <= x <= 1) or not (-1 <= y <= 1):
+        #     raise Exception('unexpected vertex offset')
 
-        x = int( (x+1)*(self.ImageWidth/2)+self.OffsetX )
-        y = int( (y+1)*(self.ImageHeight/2)+self.OffsetY )
+        # x = int( (x+1)*(self.ImageWidth/2)+self.OffsetX )
+        # y = int( (y+1)*(self.ImageHeight/2)+self.OffsetY )
 
         self.pixels[y-1][x-1] = self.color
 
@@ -87,16 +87,21 @@ class Renderer(object):
 
 
     def glPoint(self, x, y):
-        if not (-1 <= x <= 1) or not (-1<= y <= 1):
-            raise Exception('unexpected value')
+        # if not (-1 <= x <= 1) or not (-1<= y <= 1):
+        #     raise Exception('unexpected value')
         
         self.glVertex(x,y)
 
     def glLine(self, x0, y0, x1, y1):
-        x0 = int( (x0+1)*(self.ImageWidth/2)+self.OffsetX )
-        y0 = int( (y0+1)*(self.ImageHeight/2)+self.OffsetY )
-        x1 = int( (x1+1)*(self.ImageWidth/2)+self.OffsetX )
-        y1 = int( (y1+1)*(self.ImageHeight/2)+self.OffsetY )
+        x0 = int(x0)
+        y0 = int(y0)
+        x1 = int(x1)
+        y1 = int(y1)
+
+        # x0 = int( (x0+1)*(self.ImageWidth/2)+self.OffsetX )
+        # y0 = int( (y0+1)*(self.ImageHeight/2)+self.OffsetY )
+        # x1 = int( (x1+1)*(self.ImageWidth/2)+self.OffsetX )
+        # y1 = int( (y1+1)*(self.ImageHeight/2)+self.OffsetY )
         dy = abs(y1 - y0)
         dx = abs(x1 - x0)
 
@@ -110,7 +115,7 @@ class Renderer(object):
             t,t1 = x0,y0
             x0, y0 = x1, y1
             x1, y1 = t, t1
-        
+       
         if steep:
             x0, y0 = y0, x0
             x1, y1 = y1, x1
@@ -135,7 +140,8 @@ class Renderer(object):
                 threshold += 1 * 2 * dx
 
         for point in points:
-            self.glPoint(((point[0]-self.OffsetX)*(2/self.ImageWidth)-1), ((point[1]-self.OffsetY)*(2/self.ImageHeight)-1))
+            self.glPoint(point[0],point[1])
+            # self.glPoint(((point[0]-self.OffsetX)*(2/self.ImageWidth)-1), ((point[1]-self.OffsetY)*(2/self.ImageHeight)-1))
 
     def glPoligon(self, poligon):
         with open(poligon) as f:
@@ -144,10 +150,10 @@ class Renderer(object):
                 x1, y1 = lines[i % len(lines)].split(', ')
                 x2, y2 = lines[(i + 1) % len(lines)].split(', ')
 
-                x1 = (int(x1)-1)/(self.ImageWidth*2)-self.OffsetX 
-                y1 = (int(y1)+1)/(self.ImageHeight*2)-self.OffsetY
-                x2 = (int(x2)+1)/(self.ImageWidth*2)-self.OffsetX
-                y2 = (int(y2)+1)/(self.ImageHeight*2)-self.OffsetY
+                # x1 = (int(x1)-1)/(self.ImageWidth*2)-self.OffsetX 
+                # y1 = (int(y1)+1)/(self.ImageHeight*2)-self.OffsetY
+                # x2 = (int(x2)+1)/(self.ImageWidth*2)-self.OffsetX
+                # y2 = (int(y2)+1)/(self.ImageHeight*2)-self.OffsetY
 
                 self.glLine(x1, y1, x2, y2)
 
@@ -164,8 +170,11 @@ class Renderer(object):
                 poligonY.append(int(y1))
                 poligonX.append(int(x1))
         xmin, ymin, xmax, ymax = min(poligonX), min(poligonY), max(poligonX), max(poligonY)
+        
         for y in range(ymin, ymax + 1):
             for x in range(xmin, xmax + 1):
+                print (self.pixels[y][x],self.color )
+
                 if self.pixels[y][x] == self.color:
                     adentro.append(x)
             try:
