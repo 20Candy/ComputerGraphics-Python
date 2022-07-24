@@ -102,45 +102,39 @@ class Renderer(object):
         # y0 = int( (y0+1)*(self.ImageHeight/2)+self.OffsetY )
         # x1 = int( (x1+1)*(self.ImageWidth/2)+self.OffsetX )
         # y1 = int( (y1+1)*(self.ImageHeight/2)+self.OffsetY )
+
         dy = abs(y1 - y0)
         dx = abs(x1 - x0)
 
         steep = dy > dx
 
-        if x0 == x1 and y0 == y1:
-            self.glPoint(x0,y1)
-            return
-
-        if x1 < x0:
-            t,t1 = x0,y0
-            x0, y0 = x1, y1
-            x1, y1 = t, t1
-       
         if steep:
             x0, y0 = y0, x0
             x1, y1 = y1, x1
 
+        if x0 > x1:
+            x0, x1 = x1, x0
+            y0, y1 = y1, y0
+
         dy = abs(y1 - y0)
         dx = abs(x1 - x0)
 
-        offset = 0 * 2 * dx
-        threshold = 0.5 * 2 * dx
+        offset = 0
+        threshold = dx
         y = y0
 
-        points = []
         for x in range(x0, x1):
-            if steep:
-                points.append((y, x))
-            else:
-                points.append((x, y))
+            offset += dy *2
 
-            offset += (dy/dx) * 2 * dx
             if offset >= threshold:
                 y += 1 if y0 < y1 else -1
-                threshold += 1 * 2 * dx
+                threshold += dx *2
 
-        for point in points:
-            self.glPoint(point[0],point[1])
+            if steep:
+                self.glPoint(y, x)
+            else:
+                self.glPoint(x, y)
+
             # self.glPoint(((point[0]-self.OffsetX)*(2/self.ImageWidth)-1), ((point[1]-self.OffsetY)*(2/self.ImageHeight)-1))
 
     def glPoligon(self, poligon):
@@ -159,31 +153,31 @@ class Renderer(object):
 
 
     def glFill(self, poligon):
-        adentro = []
-        poligonY = []
-        poligonX = []
-        with open(poligon) as f:
-            lines = f.read().splitlines()
-            for i in range(len(lines)):
-                x1, y1 = lines[i % len(lines)].split(', ')
-                self.polygonV.append([int(x1), int(y1)])
-                poligonY.append(int(y1))
-                poligonX.append(int(x1))
-        xmin, ymin, xmax, ymax = min(poligonX), min(poligonY), max(poligonX), max(poligonY)
+        # fill = []
+        # poligonY = []
+        # poligonX = []
+        # with open(poligon) as f:
+        #     lines = f.read().splitlines()
+        #     for i in range(len(lines)):
+        #         x1, y1 = lines[i % len(lines)].split(', ')
+        #         self.polygonV.append([int(x1), int(y1)])
+        #         poligonY.append(int(y1))
+        #         poligonX.append(int(x1))
+        # xmin, ymin, xmax, ymax = min(poligonX), min(poligonY), max(poligonX), max(poligonY)
         
-        for y in range(ymin, ymax + 1):
-            for x in range(xmin, xmax + 1):
-                print (self.pixels[y][x],self.color )
+        # for y in range(ymin, ymax + 1):
+        #     for x in range(xmin, xmax + 1):
+        #         print (self.pixels[y][x],self.color )
 
-                if self.pixels[y][x] == self.color:
-                    adentro.append(x)
-            try:
-                for num in range(adentro[0], adentro[-1]):
-                    self.pixels[y][num] = self.color
-                adentro = []
-            except:
-                pass
-        adentro = []
+        #         if self.pixels[y][x] == self.color:
+        #             fill.append(x)
+        #     try:
+        #         for num in range(fill[0], fill[-1]):
+        #             self.pixels[y][num] = self.color
+        #         fill = []
+        #     except:
+        #         pass
+        fill = []
 
     
 
