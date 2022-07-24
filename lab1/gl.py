@@ -93,6 +93,7 @@ class Renderer(object):
         self.glVertex(x,y)
 
     def glLine(self, x0, y0, x1, y1):
+
         x0 = int(x0)
         y0 = int(y0)
         x1 = int(x1)
@@ -167,8 +168,6 @@ class Renderer(object):
         
         for y in range(ymin, ymax + 1):
             for x in range(xmin, xmax + 1):
-                print (self.pixels[y][x],self.color )
-
                 if self.pixels[y][x] == self.color:
                     fill.append(x)
             try:
