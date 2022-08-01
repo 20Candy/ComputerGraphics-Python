@@ -168,15 +168,20 @@ class Renderer(object):
         
         for y in range(ymin, ymax + 1):
             for x in range(xmin, xmax + 1):
-                if self.pixels[y][x] == self.color:
+                if self.pixels[y][x] == self.color and self.pixels[y][x - 1] != self.color:
                     fill.append(x)
-            try:
-                for num in range(fill[0], fill[-1]):
-                    self.pixels[y][num] = self.color
-                fill = []
-            except:
-                pass
-        fill = []
+
+            if len(fill) > 1:
+                if len(fill) % 2 == 0:
+                    for i in range(0, len(fill) - 1, 2):
+                        for num in range(fill[i], fill[i + 1]):
+                            self.pixels[y][num] = self.color
+                else:
+                    for i in range(len(fill) - 1):
+                        for num in range(fill[i], fill[i + 1]):
+                            self.pixels[y][num] = self.color
+            fill = []
+
 
     
 
