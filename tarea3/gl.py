@@ -89,6 +89,7 @@ class Renderer(object):
 
     def glPoint(self, x, y):
         if not (-1 <= x <= 1) or not (-1<= y <= 1):
+
             raise Exception('unexpected value')
         
         self.glVertex(x,y)
@@ -102,11 +103,7 @@ class Renderer(object):
         dx = abs(x1 - x0)
 
         steep = dy > dx
-        if x1 < x0:
-            t,t1 = x0,y0
-            x0, y0 = x1, y1
-            x1, y1 = t, t1
-        
+
         if steep:
             x0, y0 = y0, x0
             x1, y1 = y1, x1
@@ -146,15 +143,9 @@ class Renderer(object):
                 v1 = model.vertices[f1 - 1]
                 v2 = model.vertices[f2 - 1]
                 
-                x1 = round((v1[0] + translate[0]) * scale[0])
-                y1 = round((v1[1] + translate[1]) * scale[1])
-                x2 = round((v2[0] + translate[0]) * scale[0])
-                y2 = round((v2[1] + translate[1]) * scale[1])
+                x1 = ((v1[0] + translate[0]) * scale[0])
+                y1 = ((v1[1] + translate[1]) * scale[1])
+                x2 = ((v2[0] + translate[0]) * scale[0])
+                y2 = ((v2[1] + translate[1]) * scale[1])
 
-                self.line((x1, y1), (x2, y2))
-
-    
-
-
-  
-
+                self.glLine(x1, y1, x2, y2)
