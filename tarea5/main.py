@@ -1,5 +1,5 @@
 from gl import Renderer
-from obj import Texture
+from texture import Texture
 
 r = Renderer()
 r.glInit()
