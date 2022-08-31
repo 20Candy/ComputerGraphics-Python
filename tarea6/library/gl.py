@@ -22,6 +22,8 @@ class Renderer(object):
         self.ImageHeight = 0
         self.ImageWidth = 0
 
+        self.View = None
+
     def glClear(self):
         self.pixels = [
             [self.clean_color for x in range(self.width)]
@@ -142,7 +144,11 @@ class Renderer(object):
     def transform(self, vertex):
         augmentedVertex = V4(vertex[0], vertex[1], vertex[2], 1)
 
-        transformedVertex = product_matrix_vector(self.model, augmentedVertex)
+        matrix1 = product_matrix_vector(self.model, augmentedVertex)
+        matrix2 = product_matrix_vector(self.View,matrix1)
+        matrix3 = product_matrix_vector(self.Projection,matrix2)
+        transformedVertex = product_matrix_vector(self.Viewport,matrix3)
+
         transformedVertex = V4(*transformedVertex)
 
         return V3(
@@ -261,7 +267,7 @@ class Renderer(object):
 
     def showZbuffer(self):
         # Prints the pixels to the screen
-        f = open('medium_shot.bmp', 'bw')
+        f = open('result.bmp', 'bw')
 
         # File header (14 bytes)
         f.write(char('B'))
@@ -298,7 +304,7 @@ class Renderer(object):
 
         f.close()
 
-    def loadMatrix(this, translate = (0, 0, 0), scale = (1, 1, 1), rotate = (0, 0, 0)):
+    def loadMatrix(self, translate = (0, 0, 0), scale = (1, 1, 1), rotate = (0, 0, 0)):
         translate = V3(*translate)
         scale = V3(*scale)
         rotate = V3(*rotate)
@@ -339,4 +345,47 @@ class Renderer(object):
         ]
 
         rotateMatrix = product_matrix(product_matrix(rotateYMatrix,rotateZMatrix),rotateZMatrix)
-        this.model = product_matrix(product_matrix(translateMatrix,scaleMatrix),rotateMatrix)
+        self.model = product_matrix(product_matrix(translateMatrix,scaleMatrix),rotateMatrix)
+
+    def lookAt(self, eye, center, up):
+        z = norm(sub(eye, center))
+        x = norm(cross(up, z))
+        y = norm(cross(z, x))
+        self.loadViewMatrix(x, y, z, center)
+        self.loadProjectionMatrix(-1 / length(sub(eye, center)))
+        self.loadViewportMatrix()
+
+
+    def loadViewMatrix(self, x, y, z, center):
+        Mi = [
+            [x.x, x.y, x.z,  0],
+            [y.x, y.y, y.z, 0],
+            [z.x, z.y, z.z, 0],
+            [0,     0,   0, 1]
+        ]
+
+        Op = [
+            [1, 0, 0, -center.x],
+            [0, 1, 0, -center.y],
+            [0, 0, 1, -center.z],
+            [0, 0, 0, 1]
+        ]
+
+        self.View = product_matrix(Mi,Op)
+
+
+    def loadProjectionMatrix(self, coeff):
+        self.Projection =  [
+            [1, 0, 0, 0],
+            [0, 1, 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, coeff, 1]
+        ]
+
+    def loadViewportMatrix(self, x = 0, y = 0):
+        self.Viewport =  [
+            [self.width/2, 0, 0, x + self.width/2],
+            [0, self.height/2, 0, y + self.height/2],
+            [0, 0, 128, 128],
+            [0, 0, 0, 1]
+        ]
