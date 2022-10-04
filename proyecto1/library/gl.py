@@ -447,18 +447,18 @@ class Renderer(object):
 
         if render.active_texture:
             texColor= render.active_texture.get_color_with_intensity(tx, ty, i)
-            b *= texColor[0]
-            g *= texColor[1]
-            r *= texColor[2]
+            b *= texColor[0] / 255
+            g *= texColor[1] / 255
+            r *= texColor[2] / 255
 
         if render.active_normalMap:
 
             texNormal = render.active_normalMap.get_color(tx, ty)
-            texNormal = V3((texNormal[2]) * 2 - 1,
-                        (texNormal[1]) * 2 - 1,
-                        (texNormal[0]) * 2 - 1)
+            texNormal = [ (texNormal[2] / 255) * 2 - 1,
+                        (texNormal[1] / 255) * 2 - 1,
+                        (texNormal[0] / 255) * 2 - 1]
 
-            texNormal = div(texNormal, length(texNormal))
+            texNormal = div(texNormal, frobeniusNorm(texNormal))
 
             # B - A
             edge1 = sub3(B[0], A[0], B[1], A[1], B[2], A[2])
@@ -471,16 +471,16 @@ class Renderer(object):
 
             tangent = [0,0,0]
             f = 1 / (deltaUV1[0] * deltaUV2[1] - deltaUV2[0] * deltaUV1[1])
-            tangent.x = f * (deltaUV2[1] * edge1[0] - deltaUV1[1] * edge2[0])
-            tangent.y = f * (deltaUV2[1] * edge1[1] - deltaUV1[1] * edge2[1])
-            tangent.z = f * (deltaUV2[1] * edge1[2] - deltaUV1[1] * edge2[2])
-            tangent = div(tangent, length(tangent))
-            tangent = div(tangent, length(tangent))
+            tangent[0] = f * (deltaUV2[1] * edge1[0] - deltaUV1[1] * edge2[0])
+            tangent[1] = f * (deltaUV2[1] * edge1[1] - deltaUV1[1] * edge2[1])
+            tangent[2] = f * (deltaUV2[1] * edge1[2] - deltaUV1[1] * edge2[2])
+            tangent = div(tangent, frobeniusNorm(tangent))
+            tangent = div(tangent, frobeniusNorm(tangent))
             tangent = subVectors(tangent, multiply(dot2(tangent, normal[0], normal[1], normal[2]), normal))
-            tangent = tangent / length(tangent)
+            tangent = tangent / frobeniusNorm(tangent)
 
             bitangent = cross0(normal, tangent)
-            bitangent = bitangent / length(bitangent)
+            bitangent = bitangent / frobeniusNorm(bitangent)
 
 
             tangentMatrix = [
@@ -501,6 +501,10 @@ class Renderer(object):
         b *= intensity
         g *= intensity
         r *= intensity
+
+        b *= 255
+        g *= 255
+        r *= 255
 
         if intensity > 0:
             return color(r, g, b)

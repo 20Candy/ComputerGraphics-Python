@@ -66,6 +66,7 @@ def norm(v0):
         v0.z/l
     )
 
+
 def bbox(A, B, C):
     xs = [A.x, B.x, C.x]
     xs.sort()
@@ -99,7 +100,8 @@ def div(v0, norm):
         arr_div.extend((v0[0] / norm, v0[1] / norm, v0[2] / norm))
         return arr_div
 
-
+def frobeniusNorm(v0):
+        return((v0[0]**2 + v0[1]**2 + v0[2]**2)**(1/2))
 
 def sub2(x0, x1, y0, y1):
     arr_sub = []
